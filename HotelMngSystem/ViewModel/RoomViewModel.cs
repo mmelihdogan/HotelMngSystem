@@ -23,7 +23,6 @@ namespace HotelMngSystem.ViewModel
 
         [Display(Name = "Booking Status")]
 
-
         public int BookingStatusId { get; set; }
 
         [Display(Name = "Room Type")]

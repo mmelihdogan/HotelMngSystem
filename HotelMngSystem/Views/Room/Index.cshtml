@@ -15,8 +15,37 @@
 <script src="~/Scripts/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
-
+        $("#btnSave").click(function () {
+            SaveRoomData();
+        })
     });
+
+    function SaveRoomData() {
+        var formData = new FormData;
+        formData.append("RoomNumber", $("#txtRoomNumber").val());
+        formData.append("RoomPrice", $("#txtRoomPrice").val());
+        formData.append("BookingStatusId", $("#ddBookingStatus").val());
+        formData.append("RoomTypeId", $("#ddRoomType").val());
+        formData.append("RoomCapacity", $("#txtRoomCapacity").val());
+        formData.append("RoomDescription", $("#txtRoomDescription").val());
+        formData.append("Image", $("#UploadImage").get(0).files[0]);
+
+        $.ajax({
+            async: true,
+            type: 'POST',
+            contentType: false,
+            processData: false,
+            data: formData,
+            success: function (data) {
+
+            },
+            error: function () {
+                alert(' There is a some problem to process your request. Please try later!')
+            }
+        })
+
+
+    }
 
     function DisplayImage(result) {
         if (result.files && result.files[0]) {
@@ -48,44 +77,44 @@
             <div class="modal-body">
                 <div class="form-group col-md-6">
                     @Html.LabelFor(model => model.RoomNumber)
-                    @Html.TextBoxFor(model => model.RoomNumber, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.RoomNumber, new { @class = "form-control",  id = "txtRoomNumber" })
                 </div>
 
                 <div class="form-group col-md-6">
                     @Html.LabelFor(model => model.RoomPrice)
-                    @Html.TextBoxFor(model => model.RoomPrice, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.RoomPrice, new { @class = "form-control", id="txtRoomPrice" })
                 </div>
 
                 <div class="form-group col-md-6">
                     @Html.LabelFor(model => model.RoomTypeId)
-                    @Html.DropDownListFor(model => model.RoomTypeId, Model.ListOfBookingStatus, new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.RoomTypeId, Model.ListOfRoomType, new { @class = "form-control", id = "ddRoomType" })
                 </div>
 
                 <div class="form-group col-md-6">
                     @Html.LabelFor(model => model.BookingStatusId)
-                    @Html.DropDownListFor(model => model.BookingStatusId, Model.ListOfBookingStatus, new { @class = "form-control" })
+                    @Html.DropDownListFor(model => model.BookingStatusId, Model.ListOfBookingStatus, new { @class = "form-control",  id = "ddBookingStatus" })
                 </div>
 
                 <div class="form-group col-md-6">
                     @Html.LabelFor(model => model.RoomCapacity)
-                    @Html.TextBoxFor(model => model.RoomCapacity, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.RoomCapacity, new { @class = "form-control", id = "txtRoomCapacity" })
                 </div>
 
                 <div class="form-group col-md-6">
                     @Html.LabelFor(model => model.RoomDescription)
-                    @Html.TextBoxFor(model => model.RoomDescription, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.RoomDescription, new { @class = "form-control", id = "txtRoomDescription" })
                 </div>
 
                 <div class="form-group col-md-6">
                     @Html.LabelFor(model => model.RoomImage)
-                    <input type="file" class="form-control" name="roomImage" title="Load Image" onchange="DisplayImage(this)" />
+                    <input id="UploadImage" type="file" class="form-control" name="roomImage" title="Load Image" onchange="DisplayImage(this)" />
                     <img id="imgRoom" height="100" width="100" style="border: solid" />
                 </div>
 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save</button>
+                <button id="btnSave" type="button" class="btn btn-primary">Save</button>
             </div>
         </div>
     </div>
