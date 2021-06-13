@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="BungalowDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="BungalowDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Payments">
           <Key>
             <PropertyRef Name="PaymentId" />
@@ -61,7 +61,7 @@
             <PropertyRef Name="RoomTypeId" />
           </Key>
           <Property Name="RoomTypeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="RoomType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RoomTypeName" Type="varchar" MaxLength="50" Nullable="false" />
         </EntityType>
         <EntityContainer Name="BungalowDBModelStoreContainer">
           <EntitySet Name="Payments" EntityType="Self.Payments" Schema="Hotel" store:Type="Tables" />
@@ -71,8 +71,7 @@
           <EntitySet Name="PaymentTypes" EntityType="Self.PaymentTypes" Schema="Master" store:Type="Tables" />
           <EntitySet Name="RoomTypes" EntityType="Self.RoomTypes" Schema="Master" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="BungalowDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -127,21 +126,21 @@
           <Property Name="PaymentTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="PaymentType1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
-        <EntityType Name="RoomType">
-          <Key>
-            <PropertyRef Name="RoomTypeId" />
-          </Key>
-          <Property Name="RoomTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RoomType1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
-        </EntityType>
         <EntityContainer Name="BungalowDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Payments" EntityType="Self.Payment" />
           <EntitySet Name="RoomBookings" EntityType="Self.RoomBooking" />
           <EntitySet Name="Rooms" EntityType="Self.Room" />
           <EntitySet Name="BookingStatus" EntityType="Self.BookingStatu" />
           <EntitySet Name="PaymentTypes" EntityType="Self.PaymentType" />
-          <EntitySet Name="RoomTypes" EntityType="Self.RoomType" />
+          <EntitySet Name="RoomTypes" EntityType="BungalowDBModel.RoomType" />
         </EntityContainer>
+        <EntityType Name="RoomType">
+          <Key>
+            <PropertyRef Name="RoomTypeId" />
+          </Key>
+          <Property Name="RoomTypeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoomTypeName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -207,8 +206,8 @@
           <EntitySetMapping Name="RoomTypes">
             <EntityTypeMapping TypeName="BungalowDBModel.RoomType">
               <MappingFragment StoreEntitySet="RoomTypes">
+                <ScalarProperty Name="RoomTypeName" ColumnName="RoomTypeName" />
                 <ScalarProperty Name="RoomTypeId" ColumnName="RoomTypeId" />
-                <ScalarProperty Name="RoomType1" ColumnName="RoomType" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
