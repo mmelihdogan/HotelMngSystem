@@ -1,7 +1,92 @@
-﻿
-@{
-    ViewBag.Title = "Index";
-}
+﻿@model HotelMngSystem.ViewModel.RoomViewModel
 
-<h2>Index</h2>
 
+@* 
+    
+    @Model RoomViewModel
+    @Model HotelMngSystem.ViewModel.RoomViewModel
+
+    @{
+        ViewBag.Title = "Index";
+    }
+
+*@
+
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+    });
+
+    function DisplayImage(result) {
+        if (result.files && result.files[0]) {
+            var fileReader = new FileReader;
+            fileReader.onload = function (e) {
+                $("#imgRoom").attr('src', e.target.result);
+            }
+
+            fileReader.readAsDataURL(result.files[0]);
+        }
+    }
+</script>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#divAddRoom" data-backdrop="static" data-keyboard="false">
+    Add Room
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="divAddRoom" tabindex="-1" role="dialog" aria-labelledby="divAddRoomLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="divAddRoomLabel">Room</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.RoomNumber)
+                    @Html.TextBoxFor(model => model.RoomNumber, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.RoomPrice)
+                    @Html.TextBoxFor(model => model.RoomPrice, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.RoomTypeId)
+                    @Html.DropDownListFor(model => model.RoomTypeId, Model.ListOfBookingStatus, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.BookingStatusId)
+                    @Html.DropDownListFor(model => model.BookingStatusId, Model.ListOfBookingStatus, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.RoomCapacity)
+                    @Html.TextBoxFor(model => model.RoomCapacity, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.RoomDescription)
+                    @Html.TextBoxFor(model => model.RoomDescription, new { @class = "form-control" })
+                </div>
+
+                <div class="form-group col-md-6">
+                    @Html.LabelFor(model => model.RoomImage)
+                    <input type="file" class="form-control" name="roomImage" title="Load Image" onchange="DisplayImage(this)" />
+                    <img id="imgRoom" height="100" width="100" style="border: solid" />
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
