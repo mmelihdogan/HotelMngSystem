@@ -1,0 +1,48 @@
+﻿@model IEnumerable<HotelMngSystem.ViewModel.RoomDetailsViewModel>
+
+<table style="width: 100%">
+    <thead style="background:#00B7EB;">
+        <tr>
+            <th style="padding: 5px">Action</th>
+            <th style="padding: 5px">Image:</thstyle="padding:>
+            <th style="padding: 5px">Room Number:</th>
+            <th style="padding: 5px">Room Price:</th>
+            <th style="padding: 5px">Booking Status:</th>
+            <th style="padding: 5px">Room Type:</th>
+            <th style="padding: 5px">Room Capacity:</th>
+            <th style="padding: 5px">Room Description:</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var item in Model)
+            {
+        <tr>
+            <td>
+                <span id="btnDelete" class="glyphicon glyphicon-trash" onclick="DeleteRoom(@item.RoomId)"></span>
+                <span id="btnEdit" class="glyphicon glyphicon-pencil" onclick="EditRoom(@item.RoomId)"></span>
+            </td>
+            <td>
+                <img src="@Url.Content("~/RoomImages/" + item.RoomImage)" width="30" height="30" class="img-responsive" />
+            </td>
+            <td>
+                @item.RoomNumber
+            </td>
+            <td>
+                @item.RoomPrice
+            </td>
+            <td>
+                @item.BookingStatus
+            </td>
+            <td>
+                @item.RoomType
+            </td>
+            <td>
+                @item.RoomCapacity
+            </td>
+            <td>
+                @item.RoomDescription
+            </td>
+        </tr>
+            }
+    </tbody>
+</table>
