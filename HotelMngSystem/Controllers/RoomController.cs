@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -38,5 +39,46 @@ namespace HotelMngSystem.Controllers
 
             return View(objRoomViewModel); 
         }
+        [HttpPost]
+
+        public ActionResult Index(RoomViewModel objRoomViewModel) {
+
+            // objBungalowDBEntities
+            Room objRoom = new Room()
+            {
+                RoomNumber = objRoomViewModel.RoomNumber,
+                RoomDescription = objRoomViewModel.RoomDescription,
+                RoomPrice = objRoomViewModel.RoomPrice,
+                BookingStatusId = objRoomViewModel.BookingStatusId,
+                IsActive = true,
+                RoomCapacity = objRoomViewModel.RoomCapacity,
+                RoomTypeId = objRoomViewModel.RoomTypeId
+            };
+            objBungalowDBEntities.Rooms.Add(objRoom);
+            objBungalowDBEntities.SaveChanges();
+
+            return Json(new {message = "Room Successfully Added.", success = true}, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetAllRooms()
+        {
+            IEnumerable<RoomDetailsViewModel> listOfRoomDetailsViewModels =
+                (from objRoom in objBungalowDBEntities.Rooms
+                 join objBooking in objBungalowDBEntities.BookingStatus on objRoom.BookingStatusId equals objBooking.BookingStatusId
+                 join objRoomType in objBungalowDBEntities.RoomTypes on objRoom.RoomTypeId equals objRoomType.RoomTypeId
+                 select new RoomDetailsViewModel()
+                 {
+                     RoomNumber = objRoom.RoomNumber,
+                     RoomDescription = objRoom.RoomDescription,
+                     RoomCapacity =objRoom.RoomCapacity,
+                     RoomPrice = objRoom.RoomPrice,
+                     BookingStatus = objBooking.BookingStatus,
+                     RoomType = objRoomType.RoomTypeName,
+                     RoomImage = objRoom.RoomImage,
+                     RoomId = objRoom.RoomId
+                 }).ToList();
+            return PartialView("_RoomDetailsPartial", listOfRoomDetailsViewModels);
+        }
+
     }
 }
