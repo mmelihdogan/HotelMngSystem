@@ -80,5 +80,13 @@ namespace HotelMngSystem.Controllers
             return PartialView("_RoomDetailsPartial", listOfRoomDetailsViewModels);
         }
 
+        [HttpGet]
+
+        public JsonResult EditRoomDetails(int roomId)
+        {
+            var result = objBungalowDBEntities.Rooms.Single(model => model.RoomId == roomId);
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
+
     }
 }
