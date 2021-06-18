@@ -22,7 +22,20 @@
     });
 
     function DeleteRoom(roomId) {
-        alert(roomId);
+        $.ajax({
+            async: true,
+            type: 'GET',
+            dataType: 'POST',
+            contentType: 'application/json; charset=utf-8',
+            data: { roomId: roomId },
+            url: '/Room/EditRoomDetails',
+            success: function (data) {
+
+            },
+            error: function () {
+                alert('ERROR!')
+            }
+        })
     }
 
     function EditRoom(roomId) {
