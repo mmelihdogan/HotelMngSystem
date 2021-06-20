@@ -1,49 +1,81 @@
 ﻿@model HotelMngSystem.ViewModel.RoomViewModel
 
+@*
 
-@* 
-    
     @Model RoomViewModel
     @Model HotelMngSystem.ViewModel.RoomViewModel
 
-    @{
-        ViewBag.Title = "Index";
-    }
-
 *@
 
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-1.12.4.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.12.1.min.js"></script>
 <script src="~/Scripts/jquery-3.4.1.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         LoadRoomDetails();
+        $("#txtRoomId").val("0");
         $("#btnSave").click(function () {
             SaveRoomData();
         });
     });
 
-    function DeleteRoom(roomId) {
+    function EditRoom(roomId) {
         $.ajax({
             async: true,
             type: 'GET',
-            dataType: 'POST',
+            dataType: 'JSON',
             contentType: 'application/json; charset=utf-8',
             data: { roomId: roomId },
             url: '/Room/EditRoomDetails',
             success: function (data) {
-
+                $("#txtRoomNumber").val(data.RoomNumber);
+                $("#txtRoomPrice").val(data.RoomPrice);
+                $("#ddBookingStatus").val(data.BookingStatusId);
+                $("#ddRoomType").val(data.RoomTypeId);
+                $("#txtRoomCapacity").val(data.RoomCapacity);
+                $("#txtRoomDescription").val(data.RoomDescription);
+                $("#imgRoom").attr('src', "../RoomImages/" + data.RoomImage);
+                $("#divAddRoom").modal({ show: true });
+                $("#txtRoomId").val(data.RoomId);
+                $("#btnSave").text("Update");
             },
             error: function () {
-                alert('ERROR!')
+                alert('Occured a problem with the request!')
             }
         })
     }
 
-    function EditRoom(roomId) {
-        alert(roomId);
+    function DeleteRoom(roomId) {
+        var result = confirm("Are you sure for this transaction?");
+        if (result === false) {
+            return false;
+        }
+        $.ajax({
+            async: true,
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            data: { roomId: roomId },
+            url: '/Room/DeleteRoomDetails',
+            success: function (data) {
+                if (data.success === true) {
+                    alert(data.message);
+                    LoadRoomDetails();
+                }
+            },
+            error: function (data) {
+                alert('There is a problem with your request. Please try later.');
+            }
+
+
+
+        });
     }
 
+
     function LoadRoomDetails() {
-        // $("#divLoadRoomDetails")
 
         $.ajax({
             async: true,
@@ -56,21 +88,21 @@
                 $("#divLoadRoomDetails").html(data);
             },
             error: function () {
-                alert('There is an issue. Sorry!')
+                alert('There is problem to process your request');
             }
-
-        })
+        });
     }
 
     function SaveRoomData() {
         var formData = new FormData;
+        formData.append("RoomId", $("#txtRoomId").val());
         formData.append("RoomNumber", $("#txtRoomNumber").val());
         formData.append("RoomPrice", $("#txtRoomPrice").val());
         formData.append("BookingStatusId", $("#ddBookingStatus").val());
         formData.append("RoomTypeId", $("#ddRoomType").val());
         formData.append("RoomCapacity", $("#txtRoomCapacity").val());
         formData.append("RoomDescription", $("#txtRoomDescription").val());
-       // formData.append("Image", $("#UploadImage").get(0).files[0]);
+        formData.append("Image", $("#UploadImage").get(0).files[0]);
 
         $.ajax({
             async: true,
@@ -83,10 +115,9 @@
                     alert(data.message);
                     ResetRoomInformation();
                     LoadRoomDetails();
-
                 }
             },
-            error: function() {
+            error: function () {
                 alert(' There is a some problem to process your request. Please try later!')
             }
         });
@@ -95,23 +126,28 @@
     function ResetRoomInformation() {
         $("#txtRoomNumber").val('');
         $("#txtRoomPrice").val('');
-        $("#ddBookingStatus").val(1);
-        $("#ddRoomType").val(1);
+        $("#ddBookingStatus").val('');
+        $("#ddRoomType").val('1');
         $("#txtRoomCapacity").val('');
         $("#txtRoomDescription").val('');
-       // $("#UploadImage").val('');
+        $("#UploadImage").val('');
         $("#txtRoomNumber").focus();
+        $("#imgRoom").removeAttr('src');
+        $("#txtRoomId").val(0);
+        $("#btnSave").val('Save');
     }
 
-  /*  function DisplayImage(result) {
+
+    function DisplayImage(result) {
         if (result.files && result.files[0]) {
             var fileReader = new FileReader;
-            fileReader.onload = function(e) {
+            fileReader.onload = function (e) {
                 $("#imgRoom").attr('src', e.target.result);
             }
             fileReader.readAsDataURL(result.files[0]);
         }
-    } */
+    }
+
 </script>
 
 <!-- Button trigger modal -->
@@ -129,47 +165,58 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="form-group col-md-6">
-                    @Html.LabelFor(model => model.RoomNumber)
-                    @Html.TextBoxFor(model => model.RoomNumber, new { @class = "form-control", id = "txtRoomNumber" })
+            <form id="formRoom">
+                <div class="modal-body">
+                    @Html.HiddenFor(model => model.RoomId, new { @id = "txtRoomId" })
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(model => model.RoomNumber)
+                        @Html.TextBoxFor(model => model.RoomNumber, new { @class = "form-control", id = "txtRoomNumber" })
+                        @Html.ValidationMessageFor(model => model.RoomNumber, null, new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(model => model.RoomPrice)
+                        @Html.TextBoxFor(model => model.RoomPrice, new { @class = "form-control", id = "txtRoomPrice" })
+                        @Html.ValidationMessageFor(model => model.RoomPrice, null, new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(model => model.RoomTypeId)
+                        @Html.DropDownListFor(model => model.RoomTypeId, Model.ListOfRoomType, new { @class = "form-control", id = "ddRoomType" })
+                        @Html.ValidationMessageFor(model => model.BookingStatusId, null, new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(model => model.BookingStatusId)
+                        @Html.DropDownListFor(model => model.BookingStatusId, Model.ListOfBookingStatus, new { @class = "form-control", id = "ddBookingStatus" })
+                        @Html.ValidationMessageFor(model => model.RoomTypeId, null, new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(model => model.RoomCapacity)
+                        @Html.TextBoxFor(model => model.RoomCapacity, new { @class = "form-control", id = "txtRoomCapacity" })
+                        @Html.ValidationMessageFor(model => model.RoomCapacity, null, new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(model => model.RoomDescription)
+                        @Html.TextBoxFor(model => model.RoomDescription, new { @class = "form-control", id = "txtRoomDescription" })
+                        @Html.ValidationMessageFor(model => model.RoomDescription, null, new { @class = "text-danger" })
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.RoomImage)
+                        <input id="UploadImage" type="file" class="form-control" name="roomImage" title="Load image" onchange="DisplayImage(this)" />
+                        <img id="imgRoom" height="200" width="200" style="border: solid" />
+                    </div>
+
+
                 </div>
+            </form>
 
-                <div class="form-group col-md-6">
-                    @Html.LabelFor(model => model.RoomPrice)
-                    @Html.TextBoxFor(model => model.RoomPrice, new { @class = "form-control", id = "txtRoomPrice" })
-                </div>
-
-                <div class="form-group col-md-6">
-                    @Html.LabelFor(model => model.RoomTypeId)
-                    @Html.DropDownListFor(model => model.RoomTypeId, Model.ListOfRoomType, new { @class = "form-control", id = "ddRoomType" })
-                </div>
-
-                <div class="form-group col-md-6">
-                    @Html.LabelFor(model => model.BookingStatusId)
-                    @Html.DropDownListFor(model => model.BookingStatusId, Model.ListOfBookingStatus, new { @class = "form-control", id = "ddBookingStatus" })
-                </div>
-
-                <div class="form-group col-md-6">
-                    @Html.LabelFor(model => model.RoomCapacity)
-                    @Html.TextBoxFor(model => model.RoomCapacity, new { @class = "form-control", id = "txtRoomCapacity" })
-                </div>
-
-                <div class="form-group col-md-6">
-                    @Html.LabelFor(model => model.RoomDescription)
-                    @Html.TextBoxFor(model => model.RoomDescription, new { @class = "form-control", id = "txtRoomDescription" })
-                </div>
-
-                @*<div class="form-group col-md-6">
-            @Html.LabelFor(model => model.RoomImage)
-            <input id="UploadImage" type="file" class="form-control" name="roomImage" title="Load Image" onchange="DisplayImage(this)" />
-            <img id="imgRoom" height="100" width="100" style="border: solid" />
-        </div> *@
-
-            </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button id="btnSave" type="button" class="btn btn-success">Save</button>
+                <button id="btnSave" type="button" class="btn btn-success">Save</button>&nbsp;
+                <button type="button" data-dismiss="modal" class="btn btn-danger">Close </button>
             </div>
         </div>
     </div>
@@ -177,5 +224,7 @@
 
 <div style="margin-top: 70px"></div>
 <div id="divLoadRoomDetails">
-    
+
 </div>
+
+<img src="@Url.Content("~/RoomImages/b1.jpg")" class="img-responsive" style="margin-top:20px" width="1200" height="300" />
